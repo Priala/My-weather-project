@@ -1,0 +1,42 @@
+p {
+    text-align: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 10px;
+    color: lightslategray;
+}
+
+.top {
+    font-weight: bolder;
+}
+
+.heading {
+    font-size: 70px;
+    position: absolute;
+    right: 180px;
+    top: 125px;
+    font-family: 'Amatic SC', cursive;
+}
+
+.props {
+    color: gray;
+}
+
+.start {
+    font-family: 'Neucha', cursive;
+}
+
+.col {
+    font-family: 'Amatic SC', cursive;
+}
+
+.cloud, .sun {
+    font-size: 100px;
+}
+.deg, .far {
+     color: black;
+     text-decoration: none;
+ }
+
+ .deg:hover, .far:hover {
+    color: brown;
+ }
