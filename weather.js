@@ -71,8 +71,10 @@ if (fill.value){
 let form = document.querySelector("#fill-form");
   form.addEventListener("submit", search);
 
+
   function showTemp(response) {
     console.log(response.data);
+    celTemp = response.data.main.temp;
     let temp = Math.round(response.data.main.temp);
     let number = document.querySelector("#no");
     number.innerHTML = `${temp}`;
@@ -83,6 +85,11 @@ let form = document.querySelector("#fill-form");
     let city = document.querySelector("#tap");
     let cityName = response.data.name;
     city.innerHTML = cityName;
+    let descriptionElement = document.querySelector("#description");
+    descriptionElement.innerHTML = response.data.weather[0].description;
+    let iconElement = document.querySelector("#icon");
+        iconElement.setAttribute("src", `https://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`);
+        iconElement.setAttribute("alt", response.data.weather[0].description);
   }
 
   function handlePosition(event) {
@@ -107,19 +114,30 @@ let form = document.querySelector("#fill-form");
   }
   navigator.geolocation.getCurrentPosition(showPosition);
 
-  // feature 3
- // function toF(event) {
-   // event.preventDefault();
-  //  let temp = document.querySelector("#no");
-    //temp.innerHTML = 70;
- // }
- // let linked =  document.querySelector("#deg-link");
-  //linked.addEventListener("click", toC);
+function toF(event) {
+   event.preventDefault();
+   let temp = document.querySelector("#no");
+  linked.classList.remove("active");
+  linkef.classList.add("active");
+   let fTemp = (celTemp * 9) / 5 + 32;
+   temp.innerHTML = Math.round(fTemp);
+ }
 
-  //function toC(event) {
-   // event.preventDefault();
-   // let temp = document.querySelector("#no");
-    // temp.innerHTML = 21;
- // }
-//  let linkef =  document.querySelector("#faren-link");
- // linkef.addEventListener("click", toF);
+function toC(event) {
+   event.preventDefault();
+   linked.classList.add("active");
+   linkef.classList.remove("active");
+   let temp = document.querySelector("#no");
+   temp.innerHTML = Math.round(celTemp);
+ }
+
+ let celTemp = null;
+ 
+ 
+let linkef =  document.querySelector("#faren-link");
+  linkef.addEventListener("click", toF);
+
+let linked =  document.querySelector("#deg-link");
+  linked.addEventListener("click", toC);
+
+  source(response);
