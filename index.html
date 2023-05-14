@@ -25,11 +25,17 @@
 </head>
 <body>
     <div class="container">
+        <br>
         <form id="fill-form">
-            <br />
-            <input type="text" class="form-control" placeholder="Enter your city name" id="fill-city"/>
+            <div class="row">
+                <div class="col-9">
+            <input type="text" class="form-control" placeholder="Enter your city name..." id="fill-city"/>
+            </div>
+            <div class="col-3">
             <input class="btn btn-primary" type="submit" value="Search" id="search-btn"/>
             <button type="button" class="btn btn-success" id="btn">Current</button>
+            </div>
+            </div>
         </form>
         <br />
         <div class="start">
@@ -40,6 +46,9 @@
             Monday 12:05
         </h3>
         <h6 class="props">
+            <div class="des" id="description">
+                Sunny
+            </div>
             Humidity: 
             <span id="humidity">
             50
@@ -51,7 +60,7 @@
             km/h
         </h6>
         <h1 class="heading">
-            &#127774 
+            <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="clear" class="sunny" id="icon">
             <span id="no">
                 21
             </span>
@@ -130,12 +139,12 @@
                 17
             </div>
         </div>
-    </div>
     <br />
     <p>
-     <a href="https://github.com/Priala/My-weather-project">Open source code</a> 
-        by Princess Alao
+        <a href="https://github.com/Priala/My-weather-project">Open source code</a>
+     by Princess Alao
     </p>
+    </div>
 
 <script src="/weather.js"></script>
 </body>
