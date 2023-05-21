@@ -1,118 +1,95 @@
-let weather = {
-  paris: {
-    temp: 19.7,
-    humidity: 80
-  },
-  tokyo: {
-    temp: 17.3,
-    humidity: 50
-  },
-  lisbon: {
-    temp: 30.2,
-    humidity: 20
-  },
-  "san francisco": {
-    temp: 20.9,
-    humidity: 100
-  },
-  oslo: {
-    temp: -5,
-    humidity: 20
-  }
-};
-
-function popUp() {
-  let celsius = Math.round(weather[city].temp);
-  let fahrenheit = 1.8 * celsius + 32;
-  fahrenheit = Math.round(fahrenheit);
-  let humidity = weather[city].humidity;
-}
-
-// feature 1
 let now = new Date();
+let h3 = document.querySelector("h3");
+
 let date = now.getDate();
-
-let hours = now.getHours();
-if (hours < 10) {
-  hours = `0${hours}`;
+let days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+let day = days[now.getDay()];
+let months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+let month = months[now.getMonth()];
+let year = now.getFullYear();
+let hour = now.getHours();
+if (hour < 10) {
+  hour = `0${hour}`;
 }
-
 let minutes = now.getMinutes();
 if (minutes < 10) {
   minutes = `0${minutes}`;
 }
+h3.innerHTML = `${day}, ${month} ${date} ${year} ${hour}:${minutes}`;
 
-let year = now.getFullYear();
+function showTemperature(response) {
+  console.log(response.data.main.temp);
+  let h2 = document.querySelector("h2");
+  let temperatureElement = document.querySelector("#no");
+  let description = document.querySelector("#description");
+  let iconElement = document.querySelector("#icon");
+  let humidityElement = document.querySelector("#humidity");
+  let windElement = document.querySelector("#wind");
 
-let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-let day = days[now.getDay()];
+  celTemp = response.data.main.temp;
 
-let h3 = document.querySelector("h3");
-h3.innerHTML = `${day} ${hours}:${minutes}`;
+  h2.innerHTML = response.data.name;
+  description.innerHTML = response.data.weather[0].description;
+  temperatureElement.innerHTML = Math.round(response.data.main.temp);
+  humidityElement.innerHTML = response.data.main.humidity;
+  windElement.innerHTML = Math.round(response.data.wind.speed * 3.6);
+  iconElement.setAttribute(
+    "src",
+    `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
+  );
+  iconElement.setAttribute("alt", response.data.weather[0].description);
 
-// feature 2
+  getForecast(response.data.coord);
+}
+
 function search(event) {
   event.preventDefault();
-  let fill = document.querySelector("#fill-city");
-  let h2 = document.querySelector("h2");
-if (fill.value){
-  h2.innerHTML = `${fill.value}`;
-} else {
-  h2.innerHTML = null;
-  alert("Please type a city");
+  let searchInput = document.querySelector("#fill-city");
+  if (searchInput.value) {
+    searchCity(searchInput.value);
+  } else {
+    let h2 = document.querySelector("h2");
+    h2.innerHTML = null;
+    alert("Please type a city");
+  }
 }
 
- let unit = "metric";
- let apiKey = "fc44672672ffd723dceda6872b5ef37a";
- let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${fill.value}&appid=${apiKey}&units=${unit}`;
+searchCity("Pretoria");
 
-  axios.get(apiUrl).then(showTemp);
+function searchCity(city) {
+  let apiKey = "50c2acd53349fabd54f52b93c8650d37";
+  let apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  axios.get(apiURL).then(showTemperature);
 }
-let form = document.querySelector("#fill-form");
-  form.addEventListener("submit", search);
 
-
-  function showTemp(response) {
-    console.log(response.data);
-    celTemp = response.data.main.temp;
-    let temp = Math.round(response.data.main.temp);
-    let number = document.querySelector("#no");
-    number.innerHTML = `${temp}`;
-    let wind = document.querySelector("#wind");
-        wind.innerHTML = Math.round(response.data.wind.speed);
-    let Humidity = document.querySelector("#humidity");
-        Humidity.innerHTML = Math.round(response.data.main.humidity);
-    let city = document.querySelector("#tap");
-    let cityName = response.data.name;
-    city.innerHTML = cityName;
-    let descriptionElement = document.querySelector("#description");
-    descriptionElement.innerHTML = response.data.weather[0].description;
-    let iconElement = document.querySelector("#icon");
-        iconElement.setAttribute("src", `https://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`);
-        iconElement.setAttribute("alt", response.data.weather[0].description);
-  }
-
-  function handlePosition(event) {
-    event.preventDefault();
-    navigator.geolocation.getCurrentPosition(showPosition);
-  }
-  
-  let button = document.querySelector("#btn");
-  button.addEventListener("click", handlePosition);
-
-  function showPosition(position) {
-    console.log(position.coords.latitude);
-    console.log(position.coords.longitude);
-    console.log(position);
-    let lat = position.coords.latitude;
-    let long = position.coords.longitude;
-    let unit = "metric";
-    let apiKey = "fc44672672ffd723dceda6872b5ef37a";
-    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}&units=${unit}`;
-
-    axios.get(apiUrl).then(showTemp);
-  }
-  navigator.geolocation.getCurrentPosition(showPosition);
+function retrievePosition(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+  let apiKey = "50c2acd53349fabd54f52b93c8650d37";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(showTemperature);
+}
 
 function toF(event) {
    event.preventDefault();
@@ -131,13 +108,66 @@ function toC(event) {
    temp.innerHTML = Math.round(celTemp);
  }
 
- let celTemp = null;
- 
- 
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return days[day];
+}
+
+function displayForecast(response) {
+  let forecast = response.data.daily;
+
+  let forecastElement = document.querySelector("#forecast");
+
+  let forecastHTML = `<div class="row">`;
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        `<div class="col-2">
+        <div class="weather-forecast-date">${formatDay(forecastDay.dt)}</div>
+        <img
+          src="http://openweathermap.org/img/wn/${
+            forecastDay.weather[0].icon
+          }@2x.png"
+          alt=""
+        />
+        <div class="weather-forecast-temperatures">
+          <span class="weather-forecast-temperature-max"> ${Math.round(
+            forecastDay.temp.max
+          )}° </span>
+          <span class="weather-forecast-temperature-min"> ${Math.round(
+            forecastDay.temp.min
+          )}° </span>
+        </div>
+      </div>
+  `;
+    }
+  });
+
+  forecastHTML = forecastHTML + `</div>`;
+  forecastElement.innerHTML = forecastHTML;
+}
+
+function getForecast(coordinates) {
+  let apiKey = "50c2acd53349fabd54f52b93c8650d37";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
+let celTemp = null;
+
+let form = document.querySelector("#fill-form");
+form.addEventListener("submit", search);
+navigator.geolocation.getCurrentPosition(retrievePosition);
+
+let button = document.querySelector("#btn");
+button.addEventListener("click", retrievePosition);
+
 let linkef =  document.querySelector("#faren-link");
   linkef.addEventListener("click", toF);
 
 let linked =  document.querySelector("#deg-link");
   linked.addEventListener("click", toC);
-
-  source(response);
