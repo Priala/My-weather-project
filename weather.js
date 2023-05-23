@@ -63,6 +63,15 @@ function showTemperature(response) {
   getForecast(response.data.coord);
 }
 
+function handlePosition(event) {
+    event.preventDefault();
+    navigator.geolocation.getCurrentPosition(retrievePosition);
+  }
+  
+let butt = document.querySelector("#btn");
+butt.addEventListener("click", handlePosition);
+
+
 function search(event) {
   event.preventDefault();
   let searchInput = document.querySelector("#fill-city");
@@ -75,13 +84,12 @@ function search(event) {
   }
 }
 
-searchCity("Pretoria");
-
 function searchCity(city) {
   let apiKey = "50c2acd53349fabd54f52b93c8650d37";
   let apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
   axios.get(apiURL).then(showTemperature);
 }
+searchCity("Pretoria");
 
 function retrievePosition(position) {
   let latitude = position.coords.latitude;
@@ -163,7 +171,7 @@ let form = document.querySelector("#fill-form");
 form.addEventListener("submit", search);
 navigator.geolocation.getCurrentPosition(retrievePosition);
 
-let button = document.querySelector("#btn");
+let button = document.querySelector("#search-btn");
 button.addEventListener("click", retrievePosition);
 
 let linkef =  document.querySelector("#faren-link");
